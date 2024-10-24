@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
 
 # column renaming dictionary
 COLUMN_RENAMING_DICT = {
@@ -67,8 +68,9 @@ def remove_enrolled_students(df:pd.DataFrame) -> pd.DataFrame:
 #convert our target variable into numeric 
 # "1" to represent a "Graduated" Status and "0" to represent "Dropout" status
 def make_target_numeric(df:pd.DataFrame) -> pd.DataFrame:
-    df['target'] = df["target"].replace({"Graduate":1, "Dropout":0})
-    return df
+    if is_numeric_dtype(df['target']) == False:
+        df['target'] = df["target"].replace({"Graduate":1, "Dropout":0})
+        return df
 
 #combines all the cleanup methods
 def clean_data() -> pd.DataFrame:
