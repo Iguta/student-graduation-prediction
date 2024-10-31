@@ -1,5 +1,13 @@
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
+import pickle
+
+import os 
+from b2 import B2
+from dotenv import load_dotenv
+
+#load our environment variables
+load_dotenv()
 
 # column renaming dictionary
 COLUMN_RENAMING_DICT = {
@@ -45,16 +53,32 @@ COLUMN_RENAMING_DICT = {
 #function to load our dataset
 def load_data() -> pd.DataFrame:
     #reading the data set and returning a pandas data frame
-    try:
-        df = pd.read_csv("././data/Student_Academic_Success.csv")
-        return df
-    except FileNotFoundError:
-        return pd.DataFrame()
-        print("File not found")
-    except Exception as e:
-        return pd.DataFrame()
-        print("An unexpected error occured")
+    # try:
+    #     df = pd.read_csv("././data/Student_Academic_Success.csv")
+    #     return df
+    # except FileNotFoundError:
+    #     return pd.DataFrame()
+    #     print("File not found")
+    # except Exception as e:
+    #     return pd.DataFrame()
+    #     print("An unexpected error occured")
 
+    #Intialize a B2 connection
+    try:
+        b2_instance = B2(endpoint=os.environ['B2_ENDPOINT'],
+        key_id=os.environ['B2_KEYID'],
+        secret_key=os.environ['B2_APPKEY'])
+        #select the bucket
+        b2_instance.set_bucket(os.environ['B2_BUCKET_NAME'])
+
+        # List files in the bucket (optional, to confirm your file exists)
+        print("Files in bucket:", b2_instance.list_files())
+        df_student = b2_instance.get_df(os.environ['REMOTE_CSV_PATH'])
+
+        print(df_student.head())
+        return df_student
+    except Exception as e:
+        print(f"An error occured:{e}")
 
 
 #function to rename columns
@@ -92,3 +116,7 @@ def clean_data() -> pd.DataFrame:
 
     return df_students
 
+
+
+
+load_data()
