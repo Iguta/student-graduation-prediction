@@ -3,7 +3,7 @@ from pandas.api.types import is_numeric_dtype
 import pickle
 
 import os 
-from b2 import B2
+from utils.b2 import B2
 from dotenv import load_dotenv
 
 #load our environment variables
