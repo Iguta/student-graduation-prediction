@@ -18,7 +18,8 @@ class StudentDropoutPredictor:
             df['Curricular units 1st sem (approved)'] / 
             df['Curricular units 1st sem (enrolled)'].replace(0, 1)
         )
-        
+
+        ## creating 'second_sem_success_ratio' variable based on Curricular units approved for 2nd Sem from Curricular units that the student enrolled in.
         df['second_sem_success_ratio'] = (
             df['Curricular units 2nd sem (approved)'] / 
             df['Curricular units 2nd sem (enrolled)'].replace(0, 1)
@@ -26,7 +27,7 @@ class StudentDropoutPredictor:
         
         df['average_grade'] = df['Curricular units 1st sem (grade)'].fillna(0) + df['Curricular units 2nd sem (grade)'].fillna(0)
         df['performance_change'] = df['Curricular units 2nd sem (grade)'].fillna(0) - df['Curricular units 1st sem (grade)'].fillna(0)
-        
+
         df['economic_factor'] = df['Unemployment rate'] * (1 - df['Scholarship holder']) * (1 - df['Tuition fees up to date'])
         
         return df
