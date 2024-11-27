@@ -28,6 +28,7 @@ class StudentDropoutPredictor:
         df['average_grade'] = df['Curricular units 1st sem (grade)'].fillna(0) + df['Curricular units 2nd sem (grade)'].fillna(0)
         df['performance_change'] = df['Curricular units 2nd sem (grade)'].fillna(0) - df['Curricular units 1st sem (grade)'].fillna(0)
 
+        ## creating 'economic_factor' variable based on Unemployment rate, Scholarship holder status and Tuition fees up to date
         df['economic_factor'] = df['Unemployment rate'] * (1 - df['Scholarship holder']) * (1 - df['Tuition fees up to date'])
         
         return df
