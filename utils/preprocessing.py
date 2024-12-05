@@ -1,4 +1,6 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
 from pandas.api.types import is_numeric_dtype
 import pickle
 
@@ -8,6 +10,59 @@ from dotenv import load_dotenv
 
 #load our environment variables
 load_dotenv()
+
+# def load_data(data_path):
+#     """Load data from CSV file"""
+#     return pd.read_csv(data_path, encoding='utf-8')
+
+def engineer_features(data):
+    """Engineer features consistently for both training and prediction"""
+    df = data.copy()
+    
+    # Calculate success ratios
+    df['first_sem_success_ratio'] = (
+        df['Curricular units 1st sem (approved)'] / 
+        df['Curricular units 1st sem (enrolled)'].replace(0, 1)
+    )
+    
+    df['second_sem_success_ratio'] = (
+        df['Curricular units 2nd sem (approved)'] / 
+        df['Curricular units 2nd sem (enrolled)'].replace(0, 1)
+    )
+    
+    # Calculate grades and changes
+    df['average_grade'] = df['Curricular units 1st sem (grade)'].fillna(0) + df['Curricular units 2nd sem (grade)'].fillna(0)
+    df['performance_change'] = df['Curricular units 2nd sem (grade)'].fillna(0) - df['Curricular units 1st sem (grade)'].fillna(0)
+    
+    # Calculate economic factor
+    df['economic_factor'] = df['Unemployment rate'] * (1 - df['Scholarship holder']) * (1 - df['Tuition fees up to date'])
+    
+    return df
+
+def prepare_features(df):
+    """Prepare feature set"""
+    features = [
+        'Age at enrollment',
+        'Previous qualification (grade)',
+        'Admission grade',
+        'first_sem_success_ratio',
+        'second_sem_success_ratio',
+        'average_grade',
+        'performance_change',
+        'economic_factor',
+        'Scholarship holder',
+        'Tuition fees up to date'
+    ]
+    return df[features]
+
+def scale_features(X, scaler=None):
+    """Scale features using StandardScaler"""
+    if scaler is None:
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+        return X_scaled, scaler
+    return scaler.transform(X), scaler
+
 
 # column renaming dictionary
 COLUMN_RENAMING_DICT = {
