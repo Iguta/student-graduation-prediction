@@ -28,3 +28,7 @@ cython_debug/
 # project
 .env
 environment.yml
+
+#tes files logs
+*.xml
+*.html
