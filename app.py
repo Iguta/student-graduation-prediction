@@ -24,7 +24,6 @@ from utils.visualizations import (
 from utils.pages import (
     display_data_overview,
     display_categorical_analysis,
-    train_logistic_model,
     make_prediction
 )
 
