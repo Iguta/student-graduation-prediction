@@ -92,11 +92,11 @@ def make_prediction(df):
         '1st_sem_units_approved': [units_approved_1st],
         '1st_sem_units_grade': [units_grade_1st],
         'course': [course],
-        'tuition_fees_up_to_date': [1 if tuition_fees_up_to_date == "Yes (1)" else 0],
-        'scholarship_holder': [1 if scholarship_holder == "Yes (1)" else 0],
+        'tuition_fees_up_to_date': [1 if tuition_fees_up_to_date == "Yes" else 0],
+        'scholarship_holder': [1 if scholarship_holder == "Yes" else 0],
         'enrollment_age': [enrollment_age],
-        'gender': [1 if gender == "Male (1)" else 0],
-        'marital_status': [1 if marital_status == "Married (1)" else 0]
+        'gender': [1 if gender == "Male" else 0],
+        'marital_status': [1 if marital_status == "Married" else 0]
     })
 
     if st.button("Predict Graduation Status"):
