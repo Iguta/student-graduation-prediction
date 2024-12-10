@@ -3,6 +3,10 @@
 ## Overview
 A machine learning-based web application that predicts and analyzes student dropout patterns in higher education using XGBoost. The system identifies students at risk of dropping out, enabling educational institutions to implement timely interventions.
 
+Below is the link to our streamlit application:
+https://student-graduation-prediction.streamlit.app/
+ 
+
 ### Key Stakeholder Benefits
 - **Academic Administrators**: Early identification of at-risk students for targeted support
 - **Student Support Services**: Data-driven insights for resource allocation
