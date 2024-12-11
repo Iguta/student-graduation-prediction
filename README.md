@@ -33,17 +33,15 @@ Model Details:
 - Binary classification with probability outputs
 - Feature standardization using StandardScaler
 - Model parameters:
-
-- Regularization strength (C parameter)
-- Solver selection (lbfgs, liblinear, newton-cg)
-- Maximum iterations
+  - Regularization strength (C parameter)
+  - Solver selection (lbfgs, liblinear, newton-cg)
+  - Maximum iterations
 
 
 - Model evaluation metrics:
-
-- ROC curve and AUC score
-- Classification report (precision, recall, F1-score)
-- Confusion matrix
+  - ROC curve and AUC score
+  - Classification report (precision, recall, F1-score)
+  - Confusion matrix
 
 
 - Interpretable coefficients showing feature importance
