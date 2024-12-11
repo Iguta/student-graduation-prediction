@@ -15,12 +15,7 @@ from .visualizations import (
     plot_prediction_probabilities,
     plot_feature_impact
 )
-from .pages import (
-    display_data_overview,
-    display_categorical_analysis,
-    train_logistic_model,
-    make_prediction
-)
+from .pages import *
 from .data_formatting import format_sample_data
 from .b2 import B2
 

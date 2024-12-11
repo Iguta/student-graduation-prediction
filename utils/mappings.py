@@ -1,5 +1,6 @@
 # utils/course_mappings.py
 # Application mode mapping
+
 APPLICATION_MODE_MAPPING = {
     1: '1st phase - general',
     2: 'Ordinance 612/93',

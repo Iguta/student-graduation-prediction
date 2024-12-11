@@ -52,7 +52,7 @@ Model Details:
 - **Pandas/NumPy**: Data manipulation and numerical operations
 - **Scikit-learn**: Logistic Regression implementation and preprocessing
 - **Plotly**: Interactive data visualization
-- **Pickle**: Model serialization and persistence
+- **Pickle**: Model persistence and loading
 - **SciPy**: Statistical analysis and testing
 
 ## Ethical Concerns and Mitigation
