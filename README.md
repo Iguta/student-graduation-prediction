@@ -44,7 +44,7 @@ The system implements an XGBoost classifier optimized for dropout prediction:
 - **Pandas/NumPy**: Data manipulation and numerical operations
 - **XGBoost**: Machine learning model implementation
 - **Plotly**: Interactive data visualization
-- **Joblib**: Model persistence and loading
+- **Pickle**: Model persistence and loading
 - **SciPy**: Statistical analysis and testing
 
 ## Ethical Concerns and Mitigation
