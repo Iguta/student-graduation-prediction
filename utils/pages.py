@@ -74,11 +74,11 @@ def make_prediction(df):
     st.markdown('<p class="title">🎓 Student Dropout Prediction App 🎓</p>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Enter student details to predict graduation status.</p>', unsafe_allow_html=True)
 
-    if not os.path.exists('xgb_model.pkl'):
-        st.warning("No trained model found. Please train the model first.")
-        return
+    # if not os.path.exists('xgb_model.pkl'):
+    #     st.warning("No trained model found. Please train the model first.")
+    #     return
     
-    with open('./xgb_model.pkl', 'rb') as file:
+    with open('xgb_model.pkl', 'rb') as file:
         model = pickle.load(file)
     print(f"Model loaded from 'xgb_model.pkl'")
     
