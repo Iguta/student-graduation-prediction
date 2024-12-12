@@ -4,8 +4,10 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 import plotly.express as px
+import pickle
 
 from .preprocessing import engineer_features, prepare_features 
+from .mappings import COURSE_MAPPING
 
 from .visualizations import (
     plot_category_proportion,
@@ -18,6 +20,7 @@ from .visualizations import (
 from .mappings import FEATURE_GROUPS
 from .data_formatting import format_sample_data
 from .models.logistic_regression import LogisticRegressionModel
+from .models.xgb_model import *
 
 def display_data_overview(df):
     st.header("Dataset Overview")
@@ -60,16 +63,24 @@ def display_categorical_analysis(df):
             fig = plot_category_proportion(df, selected_feature, 'Target')
             st.plotly_chart(fig, use_container_width=True)
 
+def get_course_code(course_name: str) -> int:
+    """
+    Map course name to its code.
+    """
+    name_to_code = {v: k for k, v in COURSE_MAPPING.items()}
+    return name_to_code.get(course_name, None)
 
 def make_prediction(df):
     st.markdown('<p class="title">🎓 Student Dropout Prediction App 🎓</p>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Enter student details to predict graduation status.</p>', unsafe_allow_html=True)
 
-    if not os.path.exists('model.pkl'):
+    if not os.path.exists('xgb_model.pkl'):
         st.warning("No trained model found. Please train the model first.")
         return
-
-    model = LogisticRegressionModel.load()
+    
+    with open('./xgb_model.pkl', 'rb') as file:
+        model = pickle.load(file)
+    print(f"Model loaded from 'xgb_model.pkl'")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -77,7 +88,7 @@ def make_prediction(df):
         units_grade_2nd = st.number_input("2nd Sem Grade", min_value=0.0, max_value=20.0, value=10.0)
         units_approved_1st = st.number_input("1st Sem Units Approved", min_value=0.0, max_value=100.0, value=50.0)
         units_grade_1st = st.number_input("1st Sem Grade", min_value=0.0, max_value=20.0, value=10.0)
-        course = st.number_input("Course", min_value=0, max_value=10, value=1)
+        course = st.selectbox("Select a Course", options=list(COURSE_MAPPING.values()))
 
     with col2:
         tuition_fees_up_to_date = st.selectbox("Tuition Fees Up to Date", ["No", "Yes"], index=1)
@@ -86,12 +97,13 @@ def make_prediction(df):
         gender = st.selectbox("Gender", ["Female", "Male"], index=1)
         marital_status = st.selectbox("Marital Status", ["Single", "Married"], index=0)
 
+    course_code = get_course_code(course)
     input_data = pd.DataFrame({
         '2nd_sem_units_approved': [units_approved_2nd],
         '2nd_sem_units_grade': [units_grade_2nd],
         '1st_sem_units_approved': [units_approved_1st],
         '1st_sem_units_grade': [units_grade_1st],
-        'course': [course],
+        'course': [course_code],
         'tuition_fees_up_to_date': [1 if tuition_fees_up_to_date == "Yes" else 0],
         'scholarship_holder': [1 if scholarship_holder == "Yes" else 0],
         'enrollment_age': [enrollment_age],
@@ -100,7 +112,8 @@ def make_prediction(df):
     })
 
     if st.button("Predict Graduation Status"):
-        prediction, probabilities = model.predict(input_data)
+        prediction, probabilities = predict(model, input_data)
+        print(probabilities)
         
         st.markdown("---")
         st.markdown('<p class="subtitle">Prediction Results</p>', unsafe_allow_html=True)
