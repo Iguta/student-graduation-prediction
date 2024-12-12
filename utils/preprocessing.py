@@ -96,7 +96,7 @@ def make_target_numeric(df:pd.DataFrame) -> pd.DataFrame:
         df['target'] = df["target"].replace({"Graduate":1, "Dropout":0})
         return df
 
-#combines all the cleanup methods
+#combines all the cleanup methods & add engineered features
 def clean_data() -> pd.DataFrame:
     #we first load the data
     df_students = load_data()
@@ -114,9 +114,38 @@ def clean_data() -> pd.DataFrame:
     #convert target variable to numeric
     df_students = make_target_numeric(df_students)
 
+    # Step 1: Map course codes to numeric categories
+    from utils.mappings import course_numeric_assignment
+    df_students['course_category'] = df_students['course'].map(course_numeric_assignment)
+
+    # Step 2: Map numeric categories to condensed group names
+    from utils.mappings import course_condensed_mapping
+    condensed_mapping = course_condensed_mapping()
+    df_students['course_condensed'] = df_students['course_category'].map(condensed_mapping)
+
+    # # Create 'unapproved_category'
+    # df_students['1st_sem_units_diff'] = df_students['1st_sem_units_enrolled'] - df_students['1st_sem_units_approved']
+    # df_students['2nd_sem_units_diff'] = df_students['2nd_sem_units_enrolled'] - df_students['2nd_sem_units_approved']
+    # one_or_fewer_unapproved = ((df_students['1st_sem_units_diff'] + df_students['2nd_sem_units_diff']) / 2 <= 1).astype(int)
+    # both_zero = ((df_students['1st_sem_units_enrolled'] == 0) & (df_students['2nd_sem_units_enrolled'] == 0)).astype(int)
+    # df_students['unapproved_category'] = 0
+    # df_students.loc[(one_or_fewer_unapproved == 1) & (both_zero == 0), 'unapproved_category'] = 1
+
+    # # Create 'academic_standing'
+    # def assign_academic_standing(grade):
+    #     if grade == 0:
+    #         return 0  # No grades provided
+    #     elif 0 < grade <= 11.5:
+    #         return 1  # Bad
+    #     elif 11.5 < grade <= 13.5:
+    #         return 2  # Average
+    #     else:
+    #         return 3  # Good
+
+    # df_students['academic_standing'] = df_students[
+    #     ['1st_sem_units_grade', '2nd_sem_units_grade']
+    # ].applymap(assign_academic_standing).max(axis=1)
+
     return df_students
 
-
-
-
-load_data()
+load_data
