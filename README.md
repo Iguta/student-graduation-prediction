@@ -1,7 +1,11 @@
 # Student Dropout Prediction System
 
 ## Overview
-A machine learning-based web application that predicts and analyzes student dropout patterns in higher education using XGBoost. The system identifies students at risk of dropping out, enabling educational institutions to implement timely interventions.
+A machine learning-based web application that predicts and analyzes student dropout patterns in higher education using Logistic Regression. The system identifies students at risk of dropping out, providing educational institutions with interpretable results for implementing timely interventions.
+
+Below is the link to our streamlit application:
+https://student-graduation-prediction.streamlit.app/
+ 
 
 ### Key Stakeholder Benefits
 - **Academic Administrators**: Early identification of at-risk students for targeted support
@@ -22,25 +26,33 @@ Key features engineered from raw data:
 - Economic factor index combining unemployment rate and financial indicators
 
 ## Algorithm Description
-The system implements an XGBoost classifier optimized for dropout prediction:
+The system implements a Logistic Regression model optimized for dropout prediction:
 
-### XGBoost Model Features
-- Gradient boosting for complex pattern recognition
-- Tree-based feature importance analysis
-- Hyperparameter optimization for:
-  - Number of estimators (100-500)
-  - Learning rate
-  - Maximum depth (5-30)
-  - Minimum child weight
+Model Details:
+
+- Binary classification with probability outputs
+- Feature standardization using StandardScaler
+- Model parameters:
+  - Regularization strength (C parameter)
+  - Solver selection (lbfgs, liblinear, newton-cg)
+  - Maximum iterations
+
+
+- Model evaluation metrics:
+  - ROC curve and AUC score
+  - Classification report (precision, recall, F1-score)
+  - Confusion matrix
+
+
+- Interpretable coefficients showing feature importance
 - Cross-validation for model validation
-- Feature importance ranking for interpretability
-
+  
 ## Tools Used
 - **Streamlit**: Web application framework and user interface
 - **Pandas/NumPy**: Data manipulation and numerical operations
-- **XGBoost**: Machine learning model implementation
+- **Scikit-learn**: Logistic Regression implementation and preprocessing
 - **Plotly**: Interactive data visualization
-- **Joblib**: Model persistence and loading
+- **Pickle**: Model persistence and loading
 - **SciPy**: Statistical analysis and testing
 
 ## Ethical Concerns and Mitigation
@@ -72,3 +84,4 @@ The system implements an XGBoost classifier optimized for dropout prediction:
   - Transparent decision-making processes
   - Regular review of support program effectiveness
   - Equal access to academic support resources
+
