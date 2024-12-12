@@ -171,7 +171,3 @@ def clean_data() -> pd.DataFrame:
 
     return df_students
 
-
-
-
-load_data()
