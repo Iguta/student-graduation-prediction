@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import joblib
-import os
-
 from utils.preprocessing import load_data, engineer_features, prepare_features
 from utils.mappings import (
     APPLICATION_MODE_MAPPING, 
@@ -24,7 +21,8 @@ from utils.visualizations import (
 from utils.pages import (
     display_data_overview,
     display_categorical_analysis,
-    make_prediction
+    make_prediction,
+    Segment_Analysis
 )
 
 def main():
@@ -35,7 +33,8 @@ def main():
     # Initialize navigation
     page = st.sidebar.radio("Go to", 
                           ["Data Overview",
-                           "Data Analysis",
+                        #    "Data Analysis",
+                        "Segmentation Analysis",
                            "Make Prediction"])
     
     try:
@@ -46,8 +45,10 @@ def main():
         if page == "Data Overview":
             display_data_overview(df)
         
-        elif page == "Data Analysis":
-            display_categorical_analysis(df)
+        # elif page == "Data Analysis":
+        #     display_categorical_analysis(df)
+        elif page == "Segmentation Analysis":
+            Segment_Analysis()
         
         elif page == "Make Prediction":
             make_prediction(df)

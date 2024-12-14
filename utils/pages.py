@@ -7,7 +7,9 @@ import plotly.express as px
 import pickle
 
 from .preprocessing import engineer_features, prepare_features 
-from .mappings import COURSE_MAPPING
+from .mappings import *
+from utils import preprocessing, feature_engineering_2 as fe2, mappings
+from streamlit_plotly_events import plotly_events
 
 from .visualizations import (
     plot_category_proportion,
@@ -130,3 +132,89 @@ def make_prediction(df):
         st.write(f"**Probability of Dropout:** {1 - probabilities[0]:.2%}")
         st.progress(probabilities[0])
         st.write(f"**Probability of Graduation:** {probabilities[0]:.2%}")
+
+# Function to show Carson's Student Segmentation Analysis page
+def Segment_Analysis():
+    st.markdown('<p class="title"> 📊 Student Segmentation 📊 </p>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Select a category.</p>', unsafe_allow_html=True)
+
+    # dropdown for selecting a category
+    category_options = mappings.category_dict()
+    selected_option = st.selectbox("Categorical Selection:",
+                                     list(mappings.category_dict().values())
+    )
+
+    # Map the selected option to the corresponding column and mapping dictionary
+    for key, value in category_options.items():
+        if value == selected_option:
+            category_col = "course_category" if key == "course_condensed_mapping" else key.replace("_mapping", "")  # Extract the column name
+            mapping_dict = getattr(mappings, key)()  # Dynamically call the corresponding mapping function
+            break
+
+    # predetermined argument
+    df = preprocessing.clean_data()
+    target_col = "target"
+
+    # Calculate the number of categories in the first plot to determine height
+    num_categories = len(df[category_col].unique())  # Or use any logic related to the first plot
+
+    # Set the height dynamically based on the number of categories in the first plot
+    calculated_height = max(860, num_categories * 35 + 150)  # Minimum height is 400, scale up based on categories
+
+    # generate plot
+    fig = fe2.plot_category_proportion(df, category_col, target_col, mapping_dict)
+    selected_points = plotly_events(
+        fig,
+        click_event=True,  # Enables click event capture
+        hover_event=False,  # Disable hover events (optional)
+        select_event=False,  # Disable select events (optional)
+        override_height=calculated_height,  # Adjust the height of the chart (optional)
+        override_width="115%"  # Adjust the width of the chart (optional)
+    )
+
+    st.write("Click on a bar above to filter the scatter plot below.")
+
+    # Check if any points are clicked
+    if selected_points:
+        selected_category = selected_points[0]["y"]  # Capture the clicked category
+        st.write(f"You selected: {selected_category}")
+
+        # Generate the second scatter plot dynamically
+        fig_scatter = fe2.plot_scatter_with_grade_avg(
+            df,
+            category_col=category_col,
+            filter_value=selected_category,
+            x_col='prev_qualification_grade',
+            y_col='adm_grade',
+            target_col='target'
+        )
+        st.plotly_chart(fig_scatter, use_container_width=True)
+    else:
+        st.write("No category selected yet.")
+
+def format_sample_data(df):
+    """Format sample data by converting numerical categories to labels"""
+    df_display = df.copy()
+    
+    binary_map = {0: 'No', 1: 'Yes'}
+    gender_map = {0: 'Female', 1: 'Male'}
+    
+    binary_columns = [
+        'Displaced', 'Educational special needs',
+        'Debtor', 'Tuition fees up to date', 'Gender', 'Scholarship holder',
+        'International'
+    ]
+    
+    for col in binary_columns:
+        if col in df_display.columns:
+            df_display[col] = df_display[col].map(gender_map if col == 'Gender' else binary_map)
+    
+    display_columns = [
+        'Course', 'Previous qualification', 'Gender', 
+        'Age at enrollment', 'International', 'Scholarship holder', 
+        'Tuition fees up to date', 'Displaced', 'Educational special needs', 
+        'Debtor', 'Target'
+    ]
+    
+    display_columns = [col for col in display_columns if col in df_display.columns]
+    return df_display[display_columns]
